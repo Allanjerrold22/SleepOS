@@ -3,7 +3,7 @@ import './Splash.css'
 export function Splash({ onContinue }) {
   return (
     <div className="splash">
-      <div className="splash__bg" aria-hidden />
+      <div className="splash__bg ambient-bg" aria-hidden />
 
       <div className="splash__center">
         <img

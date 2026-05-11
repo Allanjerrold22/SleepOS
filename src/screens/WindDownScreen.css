@@ -1,0 +1,288 @@
+/* ═════════════════════════════════════════════════
+   Wind-down screen
+═════════════════════════════════════════════════ */
+
+.winddown {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--os-font, system-ui, sans-serif);
+}
+
+/* Wallpaper */
+.winddown__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+
+/* ══════════════════════════════════════════
+   iOS NameDrop / Proximity animation
+══════════════════════════════════════════ */
+
+.winddown__namedrop {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+
+/* Warm bottom bloom */
+.winddown__glow {
+  position: absolute;
+  left: 50%;
+  bottom: -25%;
+  width: 160%;
+  height: 110%;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    50% 70% at 50% 100%,
+    rgba(255, 180, 90, 0.95) 0%,
+    rgba(255, 130, 70, 0.65) 22%,
+    rgba(255, 90, 60, 0.32) 44%,
+    rgba(180, 60, 90, 0.18) 65%,
+    transparent 100%
+  );
+  animation: wd-glow-pulse 4s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+
+@keyframes wd-glow-pulse {
+  0%, 100% { opacity: 0.85; transform: translateX(-50%) scale(1); }
+  50%      { opacity: 1;    transform: translateX(-50%) scale(1.07); }
+}
+
+/* Vertical aurora beams */
+.winddown__beam {
+  position: absolute;
+  bottom: -10%;
+  width: 28%;
+  height: 130%;
+  filter: blur(22px);
+  mix-blend-mode: screen;
+  animation: wd-beam 5s ease-in-out infinite;
+}
+
+.winddown__beam--1 {
+  left: 18%;
+  background: linear-gradient(
+    to top,
+    rgba(255, 200, 110, 0.55) 0%,
+    rgba(255, 150, 90, 0.28) 35%,
+    rgba(255, 120, 80, 0.08) 65%,
+    transparent 100%
+  );
+  animation-delay: 0s;
+}
+
+.winddown__beam--2 {
+  left: 42%;
+  background: linear-gradient(
+    to top,
+    rgba(255, 220, 150, 0.6) 0%,
+    rgba(255, 170, 110, 0.3) 35%,
+    rgba(255, 130, 90, 0.1) 65%,
+    transparent 100%
+  );
+  animation-delay: 1.2s;
+}
+
+.winddown__beam--3 {
+  left: 66%;
+  background: linear-gradient(
+    to top,
+    rgba(255, 190, 100, 0.5) 0%,
+    rgba(255, 140, 80, 0.26) 35%,
+    rgba(255, 110, 70, 0.08) 65%,
+    transparent 100%
+  );
+  animation-delay: 2.4s;
+}
+
+@keyframes wd-beam {
+  0%, 100% { transform: translateY(0)   scaleY(1);     opacity: 0.7; }
+  50%      { transform: translateY(-6%) scaleY(1.08);  opacity: 1;   }
+}
+
+/* Floating warm particles */
+.winddown__particle {
+  position: absolute;
+  bottom: -2%;
+  border-radius: 50%;
+  background: rgba(255, 210, 140, 0.95);
+  box-shadow:
+    0 0 6px rgba(255, 180, 100, 0.9),
+    0 0 14px rgba(255, 140, 80, 0.55);
+  animation-name: wd-particle-rise;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  opacity: 0;
+}
+
+@keyframes wd-particle-rise {
+  0%   { bottom: -2%;  opacity: 0; transform: translateX(0); }
+  8%   { opacity: 1; }
+  50%  { transform: translateX(6px); }
+  90%  { opacity: 0.6; }
+  100% { bottom: 108%; opacity: 0; transform: translateX(-4px); }
+}
+
+/* ══════════════════════════════════════════
+   Blur overlay
+══════════════════════════════════════════ */
+
+.winddown__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  transition:
+    background 0.9s ease,
+    backdrop-filter 0.7s ease,
+    opacity 0.6s ease;
+}
+
+/* ══════════════════════════════════════════
+   Logo — centered, transitions to 40% top
+══════════════════════════════════════════ */
+
+.winddown__logo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 4;
+  width: 14%;
+  min-width: 38px;
+  height: auto;
+  filter: brightness(0) invert(1);
+  transform: translate(-50%, -50%);
+  animation: wd-levitate 5s ease-in-out infinite;
+  transition: top 0.95s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes wd-levitate {
+  0%, 100% { translate: 0 0;     }
+  50%      { translate: 0 -6px;  }
+}
+
+/* ══════════════════════════════════════════
+   Bottom texts + buttons
+══════════════════════════════════════════ */
+
+.winddown__texts {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 8%;
+  z-index: 5;
+  padding: 0 9%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  /* default visible */
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+  transition:
+    opacity 0.7s ease,
+    transform 0.8s cubic-bezier(0.5, 0, 0.5, 1),
+    filter 0.7s ease;
+}
+
+.winddown__heading {
+  margin: 0 0 5%;
+  font-size: clamp(12px, 4%, 17px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+  line-height: 1.35;
+}
+
+.winddown__cta {
+  width: 100%;
+  padding: 3.8% 6%;
+  border: none;
+  border-radius: 999px;
+  background: #fff;
+  color: #000;
+  font-size: clamp(12px, 3.6%, 15px);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+  transition: transform 0.16s ease, opacity 0.16s ease;
+  margin-bottom: 3.5%;
+}
+
+.winddown__cta:active {
+  transform: scale(0.97);
+  opacity: 0.88;
+}
+
+.winddown__extend {
+  background: none;
+  border: none;
+  padding: 2% 4%;
+  font-size: clamp(10px, 3%, 12.5px);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: color 0.16s ease;
+}
+
+.winddown__extend:active {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* ══════════════════════════════════════════
+   State: SLEEPING
+══════════════════════════════════════════ */
+
+.winddown--sleeping .winddown__bg,
+.winddown--sleeping .winddown__namedrop {
+  opacity: 0;
+}
+
+.winddown--sleeping .winddown__overlay {
+  background: rgba(0, 0, 0, 1);
+  backdrop-filter: blur(0);
+  -webkit-backdrop-filter: blur(0);
+}
+
+/* Logo travels to 40% from top */
+.winddown--sleeping .winddown__logo {
+  top: 40%;
+}
+
+/* Texts puff away like a cloud */
+.winddown--sleeping .winddown__texts {
+  opacity: 0;
+  transform: scale(1.22) translateY(-12%);
+  filter: blur(14px);
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════
+   State: EXTENDED  (back to plain wallpaper)
+══════════════════════════════════════════ */
+
+.winddown--extended .winddown__namedrop,
+.winddown--extended .winddown__overlay,
+.winddown--extended .winddown__logo,
+.winddown--extended .winddown__texts {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}

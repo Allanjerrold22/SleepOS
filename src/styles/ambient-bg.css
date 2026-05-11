@@ -1,0 +1,39 @@
+/* Shared splash / hub atmosphere — diagonal sage gradient + soft blobs */
+.ambient-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    #809a8d 0%,
+    #a7bfb3 42%,
+    #c2d4c4 100%
+  );
+}
+
+.ambient-bg::before,
+.ambient-bg::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(72px);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.ambient-bg::before {
+  width: 320px;
+  height: 320px;
+  top: -60px;
+  left: -80px;
+  background: #6a8f83;
+}
+
+.ambient-bg::after {
+  width: 260px;
+  height: 260px;
+  bottom: -60px;
+  right: -60px;
+  background: #9abba5;
+}

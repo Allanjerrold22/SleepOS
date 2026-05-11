@@ -10,116 +10,84 @@
   overflow: hidden;
 }
 
-/* ── diagonal gradient background ── */
-.splash__bg {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    #809a8d 0%,
-    #a7bfb3 42%,
-    #c2d4c4 100%
-  );
-  z-index: 0;
-}
-
-/* soft ambient blobs for depth */
-.splash__bg::before,
-.splash__bg::after {
-  content: '';
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(72px);
-  opacity: 0.35;
-}
-
-.splash__bg::before {
-  width: 320px;
-  height: 320px;
-  top: -60px;
-  left: -80px;
-  background: #6a8f83;
-}
-
-.splash__bg::after {
-  width: 260px;
-  height: 260px;
-  bottom: -60px;
-  right: -60px;
-  background: #9abba5;
-}
+/* gradient lives in `ambient-bg.css` (class `ambient-bg`) */
 
 /* ── center block ── */
 .splash__center {
   position: relative;
   z-index: 1;
+  pointer-events: none;
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
-  padding: 0 24px;
+  gap: 5cqw;
+  padding: 0 6cqw;
   animation: splash-rise 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .splash__logo {
-  width: 100px;
+  width: 26cqw;      /* ~98px at 376px screen width */
   height: auto;
-  filter: drop-shadow(0 8px 24px rgba(60, 90, 75, 0.28));
+  filter: drop-shadow(0 2cqw 6cqw rgba(60, 90, 75, 0.28));
   animation: splash-levitate 5s ease-in-out infinite;
+  pointer-events: auto;
 }
 
 .splash__wordmark {
   margin: 0;
-  font-size: 26px;
+  font-size: 6.5cqw;  /* ~24px at 376px */
   font-weight: 600;
   letter-spacing: 0.06em;
   color: rgba(255, 255, 255, 0.92);
-  text-shadow: 0 2px 12px rgba(60, 90, 75, 0.22);
+  text-shadow: 0 0.5cqw 3cqw rgba(60, 90, 75, 0.22);
+  pointer-events: auto;
 }
 
 /* ── footer: fade-in CTA ── */
 .splash__footer {
   position: relative;
-  z-index: 1;
+  z-index: 10;
   width: 100%;
-  padding: 0 28px 44px;
+  padding: 0 7cqw 11cqw;
   box-sizing: border-box;
   animation: splash-fade-up 1.1s 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .splash__cta {
+  position: relative;
+  z-index: 1;
   display: block;
   width: 100%;
-  padding: 16px 24px;
+  padding: 4cqw 6cqw;
   border: none;
   border-radius: 999px;
   background: #000;
   color: #fff;
-  font-size: 17px;
+  font-size: 4.5cqw;   /* ~17px at 376px */
   font-weight: 600;
   letter-spacing: 0.01em;
   cursor: pointer;
   box-shadow:
-    0 4px 24px rgba(0, 0, 0, 0.18),
-    0 1px 4px rgba(0, 0, 0, 0.12);
+    0 1cqw 6cqw rgba(0, 0, 0, 0.18),
+    0 0.3cqw 1cqw rgba(0, 0, 0, 0.12);
   transition: transform 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
 }
 
 .splash__cta:active {
   transform: scale(0.97);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 0.5cqw 3cqw rgba(0, 0, 0, 0.14);
   opacity: 0.88;
 }
 
 /* ── keyframes ── */
 
-/* logo gently floats up and down */
+/* logo gently floats up and down — offset in cqw so amplitude scales too */
 @keyframes splash-levitate {
-  0%   { transform: translateY(0px); }
-  50%  { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-2.7cqw); }
+  100% { transform: translateY(0); }
 }
 
 /* whole logo block: rise + fade in from below */

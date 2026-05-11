@@ -1,0 +1,540 @@
+/* ═══════════════════════════════════════════════
+   FeatureHub — page wrapper
+   Desktop: three-column (left features | phone | right features)
+   Mobile:  phone fills viewport, side panels hidden
+═══════════════════════════════════════════════ */
+
+.fhub {
+  position: relative;
+  min-height: 100dvh;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.fhub__ambient {
+  position: absolute;
+  inset: 0;
+}
+
+/* ── Top bar ── */
+
+.fhub__topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 28px;
+  pointer-events: none;          /* let clicks pass through gaps */
+}
+
+.fhub__topbar-logo {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  opacity: 0.72;
+  transition: opacity 0.2s ease;
+  animation: fhub-topbar-in 0.7s 0.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.fhub__topbar-logo:hover { opacity: 1; }
+
+.fhub__topbar-logo img {
+  width: 22px;
+  height: auto;
+  filter: brightness(0) saturate(0%) invert(20%) sepia(15%) saturate(400%) hue-rotate(100deg);
+}
+
+.fhub__topbar-logo span {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: rgba(22, 38, 32, 0.7);
+}
+
+.fhub__topbar-portfolio {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: rgba(22, 38, 32, 0.52);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  animation: fhub-topbar-in 0.7s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.fhub__topbar-portfolio:hover {
+  color: rgba(22, 38, 32, 0.88);
+}
+
+.fhub__topbar-portfolio svg {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.fhub__topbar-portfolio:hover svg {
+  transform: translate(1px, -1px);
+}
+
+@keyframes fhub-topbar-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Hide topbar on mobile (it's inside the mock frame — no room) */
+@media (max-width: 767px) {
+  .fhub__topbar { display: none; }
+}
+
+.fhub__inner {
+  position: relative;
+  z-index: 1;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 28px 20px;
+  box-sizing: border-box;
+}
+
+/* iPhone caption under mock — readable on light sage background */
+.fhub .iphone-mock__caption {
+  color: rgba(28, 48, 40, 0.55);
+}
+
+/* ── Side panels ── */
+
+.fhub__side {
+  flex: 1;
+  max-width: 310px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;   /* fixed — retry is out of flow so this never shifts */
+}
+
+/* ── Feature item outer wrapper ── */
+
+.fhub-item-wrap {
+  position: relative;        /* anchor for absolutely-placed retry icon */
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  animation: fhub-slide-left 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: calc(var(--i, 0) * 0.11s + 0.2s);
+  /* no gap — retry no longer lives in flow */
+}
+
+/* All items rest at 80% opacity after entrance animation */
+@keyframes fhub-slide-left {
+  from { opacity: 0; transform: translateX(-22px); }
+  to   { opacity: 0.8; transform: translateX(0); }
+}
+
+@keyframes fhub-slide-right {
+  from { opacity: 0; transform: translateX(22px); }
+  to   { opacity: 0.8; transform: translateX(0); }
+}
+
+.fhub-item-wrap--right {
+  animation-name: fhub-slide-right;
+}
+
+/* ── Feature item button ── */
+
+.fhub-item {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 0;
+  text-align: left;
+  outline-offset: 4px;
+}
+
+
+/* ── Icon — white filled square ── */
+
+.fhub-item__icon {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  background: #fff;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  transition: box-shadow 0.32s ease, transform 0.32s ease, opacity 0.32s ease;
+}
+
+.fhub-item--active .fhub-item__icon {
+  box-shadow:
+    0 0 0 2px rgba(128, 154, 141, 0.55),
+    0 4px 16px rgba(128, 154, 141, 0.32),
+    0 2px 8px rgba(0, 0, 0, 0.18);
+  transform: scale(1.06);
+}
+
+/* Dim icon + text of every non-active item across BOTH panels when any feature is active.
+   Scope to .fhub (shared parent) so cross-panel dimming works. */
+.fhub:has(.fhub-item-wrap--active) .fhub-item-wrap:not(.fhub-item-wrap--active) .fhub-item__icon {
+  opacity: 0.5;
+  transform: scale(0.96);
+}
+
+.fhub:has(.fhub-item-wrap--active) .fhub-item-wrap:not(.fhub-item-wrap--active) .fhub-item__text {
+  opacity: 0.5;
+  transition: opacity 0.32s ease;
+}
+
+/* ── Retry — absolutely floated outside the row, no layout impact ── */
+
+.fhub-item__retry {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  color: rgba(22, 38, 32, 0.45);
+  transition: color 0.18s ease, opacity 0.18s ease;
+  animation: retry-fade-in 0.22s ease both;
+}
+
+/* Left-side items: retry floats to the LEFT of the wrap */
+.fhub-item-wrap--left .fhub-item__retry {
+  right: calc(100% + 2px);
+}
+
+/* Right-side items: retry floats to the RIGHT of the wrap */
+.fhub-item-wrap--right .fhub-item__retry {
+  left: calc(100% + 2px);
+}
+
+@keyframes retry-fade-in {
+  from { opacity: 0; transform: translateY(-50%) scale(0.7); }
+  to   { opacity: 1; transform: translateY(-50%) scale(1); }
+}
+
+.fhub-item__retry:hover {
+  color: rgba(22, 38, 32, 0.88);
+}
+
+.fhub-item__retry:active {
+  transform: translateY(-50%) rotate(-45deg) scale(0.9);
+}
+
+.fhub__svg {
+  width: 18px;
+  height: 18px;
+  color: #4a6b60;
+}
+
+/* ── Text block ── */
+
+.fhub-item__text {
+  flex: 1;           /* expands to fill remaining row width → consistent item widths */
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* Right-side items use the same left-align as left-side items */
+
+.fhub-item__name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: rgba(22, 38, 32, 0.45);
+  transition: color 0.28s ease;
+}
+
+.fhub-item--active .fhub-item__name {
+  color: #0f1c17;
+}
+
+.fhub-item__tag {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: rgba(128, 154, 141, 0.35);
+  color: #2d4a3e;
+}
+
+.fhub-item__sub {
+  font-size: 11.5px;
+  color: rgba(22, 38, 32, 0.38);
+  letter-spacing: 0.01em;
+  transition: color 0.28s ease;
+}
+
+.fhub-item--active .fhub-item__sub {
+  color: rgba(22, 38, 32, 0.62);
+}
+
+/* ── Connecting line ── */
+
+.fhub-item__line {
+  flex: 1;
+  height: 1px;
+  background: rgba(22, 38, 32, 0.12);
+  min-width: 12px;
+  transition: background 0.28s ease;
+}
+
+.fhub-item--active .fhub-item__line {
+  background: rgba(22, 38, 32, 0.28);
+}
+
+/* ── Phone column ── */
+
+.fhub__phone {
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════
+   Phone screen content (PhoneContent)
+═══════════════════════════════════════════════ */
+
+.fphone {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: #0a0a0b;
+  color: #f4f4f5;
+  font-family: var(--os-font, system-ui, sans-serif);
+
+  /* re-triggered on every feature change (React remount via key) */
+  animation: fphone-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes fphone-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Status bar — sits below the Dynamic Island (island is ~45px from bezel top) */
+.fphone__statusbar {
+  padding: 58px 24px 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.fphone__time {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Main body — centered placeholder */
+.fphone__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 28px 28px;
+  gap: 14px;
+  text-align: center;
+}
+
+/* Large white icon square */
+.fphone__icon-box {
+  width: 72px;
+  height: 72px;
+  background: #fff;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.32),
+    0 2px 8px rgba(0, 0, 0, 0.18);
+  margin-bottom: 6px;
+}
+
+.fphone__icon-box .fhub__svg {
+  width: 36px;
+  height: 36px;
+}
+
+.fphone__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.fphone__name {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: #fff;
+}
+
+.fphone__tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(128, 154, 141, 0.2);
+  color: #9abfaa;
+}
+
+.fphone__sub {
+  margin: 0;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.42);
+  line-height: 1.5;
+}
+
+.fphone__proto-label {
+  margin: 12px 0 0;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.16);
+}
+
+/* ── Full-bleed variant: feature has its own screen; nav pins to bottom ── */
+
+.fphone--fullbleed {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.fphone--fullbleed .fphone__nav {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+/* ── Mobile bottom nav (hidden on desktop, shown on mobile) ── */
+
+.fphone__nav {
+  display: none;
+}
+
+/* ═══════════════════════════════════════════════
+   Mobile overrides  (≤767px)
+═══════════════════════════════════════════════ */
+
+@media (max-width: 767px) {
+  .fhub__inner {
+    padding: 0;
+    gap: 0;
+    flex-direction: column;
+  }
+
+  .fhub__side {
+    display: none;
+  }
+
+  .fhub__phone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    width: 100%;
+  }
+
+  /* Restore IphoneMock full-screen behaviour on mobile */
+  .fhub__phone .iphone-mock {
+    min-height: 100dvh;
+    flex: 1;
+  }
+
+  .fhub__phone .iphone-mock__stage {
+    min-height: 100dvh;
+    padding: 0;
+  }
+
+  /* Show mobile nav inside phone */
+  .fphone__nav {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-around;
+    gap: 4px;
+    padding: 10px 8px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+  }
+
+  .fphone__nav-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 4px;
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.32);
+    transition: color 0.2s, background 0.2s;
+  }
+
+  .fphone__nav-btn--active {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  .fphone__nav-btn .fhub__svg {
+    color: inherit;
+    width: 20px;
+    height: 20px;
+  }
+
+  .fphone__nav-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 48px;
+    color: inherit;
+  }
+}

@@ -1,10 +1,10 @@
-/* iPhone 17 Pro–class logical canvas (402×874 pt); scales as one rigid phone */
+/* iPhone 17 Pro–class logical canvas (402×874 pt) — flat 2D minimalist */
 .iphone-mock {
   --iphone-ar-w: 402;
   --iphone-ar-h: 874;
-  --iphone-radius-outer: 59px;
-  --iphone-radius-inner: 53px;
-  --iphone-shell-pad: 11px;
+  --iphone-radius-outer: 56px;
+  --iphone-radius-inner: 50px;
+  --iphone-shell-pad: 10px;
 
   min-height: 100dvh;
   box-sizing: border-box;
@@ -21,62 +21,27 @@
 }
 
 .iphone-mock__caption {
-  margin: 14px 0 0;
-  font-size: 12px;
-  letter-spacing: 0.04em;
+  margin: 12px 0 0;
+  font-size: 11px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--iphone-caption, rgba(255, 255, 255, 0.38));
+  color: var(--iphone-caption, rgba(255, 255, 255, 0.32));
   user-select: none;
 }
 
-/* Titanium shell + contact shadow (reads as hardware, not a browser tab) */
+/* Flat chassis — single solid dark frame, no gradients, no perspective */
 .iphone-mock__chassis {
   position: relative;
   padding: var(--iphone-shell-pad);
   border-radius: var(--iphone-radius-outer);
-  background:
-    linear-gradient(
-      168deg,
-      rgba(255, 255, 255, 0.22) 0%,
-      rgba(255, 255, 255, 0) 22%
-    ),
-    linear-gradient(
-      210deg,
-      #8e9299 0%,
-      #4a4d54 14%,
-      #2e3036 38%,
-      #1b1c21 62%,
-      #121318 82%,
-      #0a0b0e 100%
-    );
+  background: #111113;
   box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.65) inset,
-    0 1px 0 rgba(255, 255, 255, 0.28) inset,
-    0 -18px 42px rgba(0, 0, 0, 0.45) inset,
-    0 48px 100px rgba(0, 0, 0, 0.55),
-    0 22px 44px rgba(0, 0, 0, 0.38),
-    0 6px 14px rgba(0, 0, 0, 0.28);
-  transform: rotateX(5.5deg);
-  transform-origin: 50% 80%;
-  transform-style: preserve-3d;
-  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 24px 48px rgba(0, 0, 0, 0.4),
+    0 8px 16px rgba(0, 0, 0, 0.24);
 }
 
-.iphone-mock__stage:hover .iphone-mock__chassis {
-  transform: rotateX(3deg) translateY(-4px);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .iphone-mock__chassis {
-    transition: none;
-  }
-
-  .iphone-mock__stage:hover .iphone-mock__chassis {
-    transform: rotateX(5.5deg);
-  }
-}
-
-/* OLED stack: rigid aspect; width drives height so it never looks like a wide “tab” */
+/* OLED stack — aspect ratio locked, no 3D transforms */
 .iphone-mock__glass {
   --glass-w: min(
     402px,
@@ -89,12 +54,9 @@
   height: auto;
   max-height: 88dvh;
   border-radius: var(--iphone-radius-inner);
-  background: #020203;
+  background: #000;
   overflow: hidden;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.07) inset,
-    0 0 0 2px rgba(0, 0, 0, 0.85) inset,
-    0 18px 40px rgba(0, 0, 0, 0.35) inset;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
 }
 
 .iphone-mock__bezel-ring {
@@ -103,22 +65,20 @@
   display: flex;
   flex-direction: column;
   border-radius: calc(var(--iphone-radius-inner) - 3px);
-  background: radial-gradient(
-    120% 80% at 50% 0%,
-    #1a1a1c 0%,
-    #050506 55%,
-    #000 100%
-  );
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  background: #000;
   overflow: hidden;
 }
 
 .iphone-mock__screen {
+  position: relative;
   flex: 1;
   min-height: 0;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   background: var(--os-screen-bg, #0a0a0b);
+  /* lets children use cqw/cqh units relative to the screen width */
+  container-type: inline-size;
+  container-name: phone-screen;
 }
 
 .iphone-mock__island {
@@ -130,9 +90,6 @@
   height: 34px;
   border-radius: 999px;
   background: #000;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.05),
-    0 10px 24px rgba(0, 0, 0, 0.65);
   z-index: 2;
   pointer-events: none;
 }
@@ -145,75 +102,58 @@
   width: 128px;
   height: 5px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.18);
   z-index: 2;
   pointer-events: none;
 }
 
-.iphone-mock__glare {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(
-    118deg,
-    rgba(255, 255, 255, 0) 38%,
-    rgba(255, 255, 255, 0.09) 47%,
-    rgba(255, 255, 255, 0.02) 52%,
-    rgba(255, 255, 255, 0) 62%
-  );
-  mix-blend-mode: soft-light;
-  pointer-events: none;
-  z-index: 3;
-}
-
+/* Flat side buttons — same color as chassis, hairline border only */
 .iphone-mock__mute,
 .iphone-mock__volume,
 .iphone-mock__power {
   position: absolute;
-  background: linear-gradient(180deg, #3f4248 0%, #15161a 100%);
+  background: #111113;
   border-radius: 2px;
-  box-shadow:
-    0 0 0 0.5px rgba(255, 255, 255, 0.06),
-    2px 0 6px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
   pointer-events: none;
 }
 
 .iphone-mock__mute {
   left: -3px;
   top: 14%;
-  width: 4px;
+  width: 3px;
   height: 26px;
 }
 
 .iphone-mock__volume--up {
   left: -3px;
   top: 20%;
-  width: 4px;
+  width: 3px;
   height: 56px;
 }
 
 .iphone-mock__volume--down {
   left: -3px;
   top: 28.5%;
-  width: 4px;
+  width: 3px;
   height: 56px;
 }
 
 .iphone-mock__power {
   right: -3px;
   top: 24%;
-  width: 4px;
+  width: 3px;
   height: 88px;
 }
 
+/* ── Mobile: full-bleed, no frame ── */
 @media (max-width: 767px) {
   .iphone-mock__caption,
   .iphone-mock__mute,
   .iphone-mock__volume,
   .iphone-mock__power,
   .iphone-mock__island,
-  .iphone-mock__home-bar,
-  .iphone-mock__glare {
+  .iphone-mock__home-bar {
     display: none;
   }
 
@@ -221,7 +161,6 @@
     padding: 0;
     align-items: stretch;
     justify-content: flex-start;
-    perspective: none;
   }
 
   .iphone-mock__chassis {
@@ -229,14 +168,9 @@
     border-radius: 0;
     background: transparent;
     box-shadow: none;
-    transform: none;
     flex: 1;
     display: flex;
     min-height: 100dvh;
-  }
-
-  .iphone-mock__stage:hover .iphone-mock__chassis {
-    transform: none;
   }
 
   .iphone-mock__glass {
@@ -254,7 +188,6 @@
     inset: 0;
     border-radius: 0;
     background: transparent;
-    box-shadow: none;
   }
 
   .iphone-mock__screen {
@@ -267,15 +200,20 @@
   }
 }
 
+/* ── Desktop: transparent bg (FeatureHub owns the background) ── */
 @media (min-width: 768px) {
   .iphone-mock {
-    background:
-      radial-gradient(100% 70% at 50% -10%, rgba(88, 104, 180, 0.35) 0%, transparent 55%),
-      radial-gradient(90% 55% at 50% 120%, rgba(0, 0, 0, 0.55) 0%, transparent 45%),
-      linear-gradient(180deg, #141722 0%, #0a0b10 45%, #050508 100%);
+    background: transparent;
   }
 
-  .iphone-mock__stage {
-    perspective: 1200px;
+  /* Embedded in a parent layout (e.g. FeatureHub) */
+  .iphone-mock--embedded {
+    min-height: unset;
+    background: transparent;
+  }
+
+  .iphone-mock--embedded .iphone-mock__stage {
+    min-height: unset;
+    padding: 8px 4px;
   }
 }

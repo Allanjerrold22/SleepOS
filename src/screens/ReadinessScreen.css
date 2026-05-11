@@ -1,0 +1,354 @@
+/* ═════════════════════════════════════════════════
+   Readiness screen
+═════════════════════════════════════════════════ */
+
+.readiness {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--os-font, system-ui, sans-serif);
+}
+
+.readiness__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  pointer-events: none;
+}
+
+.readiness__vignette {
+  position: absolute;
+  inset: 0;
+  height: 130px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.52) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ══════════════════════════════════════════
+   Island shell
+══════════════════════════════════════════ */
+
+.readiness__island {
+  appearance: none;
+  border: none;
+  cursor: pointer;
+
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+
+  /* idle: plain pill */
+  width: 120px;
+  height: 34px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  overflow: hidden;
+
+  /* column stack: compact-row on top, expanded-body below */
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+
+  transition:
+    width  0.52s cubic-bezier(0.34, 1.18, 0.64, 1),
+    height 0.52s cubic-bezier(0.34, 1.18, 0.64, 1),
+    border-radius 0.52s cubic-bezier(0.34, 1.18, 0.64, 1),
+    padding 0.4s ease;
+}
+
+/* ── compact / open / expanding ── */
+.readiness__island--expanding,
+.readiness__island--open,
+.readiness__island--compact {
+  width: 300px;
+  height: 62px;
+  border-radius: 999px;
+  padding: 0 14px;
+}
+
+/* ── expanded card ──
+   height: auto — fixed pixel height left dead space below the last line */
+.readiness__island--expanded {
+  width: 300px;
+  height: auto;
+  border-radius: 26px;
+  padding: 12px 16px 5px;
+}
+
+/* ══════════════════════════════════════════
+   Compact row  (logo LEFT · timer RIGHT)
+══════════════════════════════════════════ */
+
+.readiness__compact-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  /* keeps height fixed regardless of island state */
+  flex-shrink: 0;
+  height: 62px;
+
+  opacity: 0;
+  transition: opacity 0.28s ease;
+}
+
+.readiness__island--open    .readiness__compact-row,
+.readiness__island--compact .readiness__compact-row,
+.readiness__island--expanded .readiness__compact-row {
+  opacity: 1;
+  transition-delay: 0.1s;
+}
+
+/* In expanded mode the row is shorter (we don't need full 62px) */
+.readiness__island--expanded .readiness__compact-row {
+  height: 48px;
+}
+
+/* Logo — left, fixed size */
+.readiness__logo-wrap {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.readiness__logo {
+  width: 28px;
+  height: auto;
+  filter: brightness(0) invert(1);
+}
+
+/* Timer — pushed to the far right with margin-left: auto */
+.readiness__timer-block {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  line-height: 1;
+}
+
+.readiness__eyebrow {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.48);
+}
+
+.readiness__timer {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  line-height: 1.05;
+  display: inline-block;
+}
+
+/* ── Split timer ── */
+
+.split-timer {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  line-height: 1.05;
+}
+
+/* Each digit slot clips its children */
+.flip-digit {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  height: 1.15em;
+  min-width: 0.65em;
+  text-align: center;
+  vertical-align: top;
+}
+
+.flip-digit--colon {
+  display: inline-block;
+  padding: 0 1px;
+}
+
+/* Character layers */
+.flip-digit__char {
+  display: block;
+}
+
+/* New digit: slides in from top */
+.flip-digit__char--in {
+  animation: flip-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Old digit: exits downward */
+.flip-digit__char--out {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  animation: flip-out 0.32s cubic-bezier(0.5, 0, 0.75, 0) both;
+}
+
+@keyframes flip-in {
+  from { transform: translateY(-110%); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+@keyframes flip-out {
+  from { transform: translateY(0);    opacity: 1; }
+  to   { transform: translateY(110%); opacity: 0; }
+}
+
+.readiness__goal {
+  font-size: 9.5px;
+  color: rgba(255,255,255,0.35);
+  white-space: nowrap;
+}
+
+/* Hide goal text in expanded (rows take over) */
+.readiness__island--expanded .readiness__goal {
+  display: none;
+}
+
+/* ══════════════════════════════════════════
+   Expanded body
+══════════════════════════════════════════ */
+
+.readiness__expanded-body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+
+  /* collapsed by default */
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    max-height 0.35s ease 0.05s,
+    opacity 0.28s ease 0.1s;
+}
+
+.readiness__island--expanded .readiness__expanded-body {
+  max-height: 280px;
+  opacity: 1;
+  pointer-events: auto;
+  flex: 0 0 auto;
+}
+
+.readiness__divider {
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.readiness__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 0;
+  flex-shrink: 0;
+}
+
+.readiness__row-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+}
+
+.readiness__row-value {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.82);
+  font-variant-numeric: tabular-nums;
+}
+
+.readiness__row-value--green {
+  color: #30d158;
+}
+
+.readiness__hint {
+  margin: 2px 0 0;
+  padding: 0;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+  text-align: center;
+}
+
+/* ══════════════════════════════════════════
+   7-day streak
+══════════════════════════════════════════ */
+
+.week-streak {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 6px 0 5px;
+  width: 100%;
+}
+
+.week-streak__day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+/* Circle — depth: semi-transparent fill + top highlight + drop shadow */
+.week-streak__circle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  /* opacity-60 fill is done via rgba() in JS inline style */
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.28),
+    0 2px 6px rgba(0,0,0,0.45),
+    0 1px 2px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease;
+}
+
+/* Today: slightly larger with a white glow ring */
+.week-streak__day--today .week-streak__circle {
+  transform: scale(1.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.32),
+    0 0 0 2px rgba(255,255,255,0.5),
+    0 3px 8px rgba(0,0,0,0.5);
+}
+
+/* Day label */
+.week-streak__label {
+  font-size: 8px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.36);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.week-streak__day--today .week-streak__label {
+  color: rgba(255,255,255,0.68);
+  font-weight: 600;
+}

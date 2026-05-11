@@ -1,29 +1,41 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { IphoneMock } from './components/IphoneMock.jsx'
 import { Splash } from './screens/Splash.jsx'
+import { FeatureHub } from './screens/FeatureHub.jsx'
 import './App.css'
+
+const FADE_MS = 650
 
 function App() {
   const [screen, setScreen] = useState('splash')
+  const [activeFeature, setActiveFeature] = useState(0)
+  const [fading, setFading] = useState(false)
+
+  const handleGoHome = useCallback(() => {
+    setFading(true)
+    setTimeout(() => {
+      setScreen('splash')
+      setFading(false)
+    }, FADE_MS)
+  }, [])
 
   return (
-    <IphoneMock>
-      {screen === 'splash' && (
-        <Splash onContinue={() => setScreen('home')} />
+    <>
+      {screen === 'splash' ? (
+        <IphoneMock>
+          <Splash onContinue={() => setScreen('hub')} />
+        </IphoneMock>
+      ) : (
+        <FeatureHub
+          activeFeature={activeFeature}
+          onSelect={setActiveFeature}
+          onGoHome={handleGoHome}
+        />
       )}
-      {screen === 'home' && (
-        <main className="sleep-os">
-          <header className="sleep-os__header">
-            <span className="sleep-os__logo">SleepOS</span>
-            <time className="sleep-os__clock" dateTime="22:30">10:30</time>
-          </header>
-          <section className="sleep-os__body">
-            <h1 className="sleep-os__title">Ready to build</h1>
-            <p className="sleep-os__hint">Splash screen done. Add more screens here.</p>
-          </section>
-        </main>
-      )}
-    </IphoneMock>
+
+      {/* Full-screen black curtain for the hub → splash transition */}
+      {fading && <div className="app-curtain" aria-hidden />}
+    </>
   )
 }
 
